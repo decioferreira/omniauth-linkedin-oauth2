@@ -82,7 +82,7 @@ describe OmniAuth::Strategies::LinkedInOAuth2 do
       end
 
       it 'sets default scope' do
-        subject.authorize_params['scope'].should eq('r_fullprofile r_emailaddress r_network')
+        subject.authorize_params['scope'].should eq('r_basicprofile r_emailaddress')
       end
     end
   end

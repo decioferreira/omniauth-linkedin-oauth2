@@ -14,7 +14,7 @@ module OmniAuth
         :token_url => '/uas/oauth2/accessToken'
       }
 
-      option :scope, 'r_fullprofile r_emailaddress r_network'
+      option :scope, 'r_basicprofile r_emailaddress'
       option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
 
       # These are called after authentication has succeeded. If

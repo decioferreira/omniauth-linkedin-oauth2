@@ -39,12 +39,12 @@ For more details, read the LinkedIn documentation: https://developer.linkedin.co
 
 By default, omniauth-linkedin-oauth2 requests the following permissions:
 
-    'r_fullprofile r_emailaddress r_network'
+    'r_basicprofile r_emailaddress'
 
 You can configure the scope option:
 
 ```ruby
-provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_basicprofile r_emailaddress'
+provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_fullprofile r_emailaddress r_network'
 ```
 
 ## Profile Fields
