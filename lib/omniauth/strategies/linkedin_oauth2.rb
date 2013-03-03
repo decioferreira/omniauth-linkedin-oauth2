@@ -14,6 +14,8 @@ module OmniAuth
         :token_url => '/uas/oauth2/accessToken'
       }
 
+      option :scope, 'r_fullprofile r_emailaddress r_network'
+
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
       # additional calls (if the user id is returned with the token

@@ -21,4 +21,19 @@ describe OmniAuth::Strategies::LinkedInOAuth2 do
       subject.client.options[:token_url].should eq('/uas/oauth2/accessToken')
     end
   end
+
+  describe '#callback_path' do
+    it 'has the correct callback path' do
+      subject.callback_path.should eq('/auth/linkedin_oauth2/callback')
+    end
+  end
+
+  describe '#authorize_params' do
+    describe 'scope' do
+      it 'sets default scope' do
+        subject.stub(:session => {})
+        subject.authorize_params['scope'].should eq('r_fullprofile r_emailaddress r_network')
+      end
+    end
+  end
 end
