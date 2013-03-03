@@ -1,6 +1,8 @@
-# Omniauth::LinkedInOAuth2
+# OmniAuth LinkedIn OAuth2 Strategy
 
-TODO: Write a gem description
+A LinkedIn OAuth2 strategy for OmniAuth.
+
+For more details, read the LinkedIn documentation: https://developer.linkedin.com/documents/authentication
 
 ## Installation
 
@@ -18,7 +20,48 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Register your application with LinkedIn to receive an API key: https://www.linkedin.com/secure/developer
+
+This is an example that you might put into a Rails initializer at `config/initializers/omniauth.rb`:
+
+```ruby
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET']
+end
+```
+
+You can now access the OmniAuth LinkedIn OAuth2 URL: `/auth/linkedin_oauth2`.
+
+## Granting Member Permissions to Your Application
+
+With the LinkedIn API, you have the ability to specify which permissions you want users to grant your application.
+For more details, read the LinkedIn documentation: https://developer.linkedin.com/documents/authentication
+
+By default, omniauth-linkedin-oauth2 requests the following permissions:
+
+    'r_fullprofile r_emailaddress r_network'
+
+You can configure the scope option:
+
+```ruby
+provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_basicprofile r_emailaddress'
+```
+
+## Profile Fields
+
+When specifying which permissions you want to users to grant to your application, you will probably want to specify the array of fields that you want returned in the omniauth hash. The list of default fields is as follows:
+
+```ruby
+['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+```
+
+Here's an example of a possible configuration where the the fields returned from the API are: id, email-address, first-name and last-name.
+
+```ruby
+provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id', 'email-address', 'first-name', 'last-name']
+```
+
+To see a complete list of available fields, consult the LinkedIn documentation at: https://developer.linkedin.com/documents/profile-fields
 
 ## Contributing
 
