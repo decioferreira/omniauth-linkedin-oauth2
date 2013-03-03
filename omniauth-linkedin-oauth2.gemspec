@@ -21,4 +21,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'omniauth-oauth2'
 
   gem.add_development_dependency 'rspec', '~> 2.13.0'
+  gem.add_development_dependency 'simplecov'
 end
