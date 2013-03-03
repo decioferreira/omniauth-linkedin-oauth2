@@ -15,6 +15,7 @@ module OmniAuth
       }
 
       option :scope, 'r_fullprofile r_emailaddress r_network'
+      option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
@@ -25,19 +26,40 @@ module OmniAuth
 
       info do
         {
-          :name => raw_info['name'],
-          :email => raw_info['email']
+          :name => user_name,
+          :email => raw_info['emailAddress'],
+          :nickname => user_name,
+          :first_name => raw_info['firstName'],
+          :last_name => raw_info['lastName'],
+          :location => raw_info['location'],
+          :description => raw_info['headline'],
+          :image => raw_info['pictureUrl'],
+          :urls => {
+            'public_profile' => raw_info['publicProfileUrl']
+          }
         }
       end
 
       extra do
-        {
-          'raw_info' => raw_info
-        }
+        { 'raw_info' => raw_info }
       end
 
       def raw_info
-        @raw_info ||= access_token.get('/me').parsed
+        return @raw_info if @raw_info
+
+        access_token = ::OAuth2::AccessToken.new(client, self.access_token.token, {
+          :mode => :query,
+          :param_name => 'oauth2_access_token'
+        })
+
+        @raw_info = access_token.get("/v1/people/~:(#{options.fields.join(',')})?format=json").parsed
+      end
+
+      private
+
+      def user_name
+        name = "#{raw_info['firstName']} #{raw_info['lastName']}".strip
+        name.empty? ? nil : name
       end
     end
   end
