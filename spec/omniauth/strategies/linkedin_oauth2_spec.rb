@@ -67,7 +67,7 @@ describe OmniAuth::Strategies::LinkedInOAuth2 do
   describe '#raw_info' do
     before :each do
       response = double('response', :parsed => { :foo => 'bar' })
-      subject.stub(:linkedin_access_token) { double('access token', :get => response) }
+      subject.stub(:access_token) { double('access token', :get => response) }
     end
 
     it 'returns parsed response from access token' do

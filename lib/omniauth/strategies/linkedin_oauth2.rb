@@ -44,8 +44,15 @@ module OmniAuth
         { 'raw_info' => raw_info }
       end
 
+      def access_token
+        ::OAuth2::AccessToken.new(client, super.token, {
+          :mode => :query,
+          :param_name => 'oauth2_access_token'
+        })
+      end
+
       def raw_info
-        @raw_info ||= linkedin_access_token.get("/v1/people/~:(#{options.fields.join(',')})?format=json").parsed
+        @raw_info ||= access_token.get("/v1/people/~:(#{options.fields.join(',')})?format=json").parsed
       end
 
       private
@@ -53,13 +60,6 @@ module OmniAuth
       def user_name
         name = "#{raw_info['firstName']} #{raw_info['lastName']}".strip
         name.empty? ? nil : name
-      end
-
-      def linkedin_access_token
-        ::OAuth2::AccessToken.new(client, self.access_token.token, {
-          :mode => :query,
-          :param_name => 'oauth2_access_token'
-        })
       end
     end
   end
