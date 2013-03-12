@@ -44,8 +44,10 @@ module OmniAuth
         { 'raw_info' => raw_info }
       end
 
+      alias :oauth2_access_token :access_token
+
       def access_token
-        ::OAuth2::AccessToken.new(client, super.token, {
+        ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
           :mode => :query,
           :param_name => 'oauth2_access_token'
         })
