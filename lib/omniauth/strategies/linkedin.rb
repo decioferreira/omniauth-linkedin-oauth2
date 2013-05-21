@@ -2,9 +2,9 @@ require 'omniauth-oauth2'
 
 module OmniAuth
   module Strategies
-    class LinkedInOAuth2 < OmniAuth::Strategies::OAuth2
+    class LinkedIn < OmniAuth::Strategies::OAuth2
       # Give your strategy a name.
-      option :name, 'linkedin_oauth2'
+      option :name, 'linkedin'
 
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
@@ -67,4 +67,4 @@ module OmniAuth
   end
 end
 
-OmniAuth.config.add_camelization 'linkedin_oauth2', 'LinkedInOAuth2'
+OmniAuth.config.add_camelization 'linkedin', 'LinkedIn'
