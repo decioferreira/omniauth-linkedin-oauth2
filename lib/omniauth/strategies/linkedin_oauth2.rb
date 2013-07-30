@@ -53,11 +53,16 @@ module OmniAuth
         #
         # http://developer.linkedin.com/forum/sudden-authentication-failure-production-environment?page=1
         #
-        tok = oauth2_access_token.token
-        params = {:redirect_uri => callback_url}
-        options = {:mode => :query, :param_name => "oauth2_access_token"}
-        client.auth_code.get_token(tok, params, options)
+        # params = {:redirect_uri => callback_url}
+        # log :info, tok
+        # log :info, params
+        # log :info, options
+        # log :info, client
+        # client.auth_code.get_token(tok, params, options)
 
+        tok = oauth2_access_token.token
+        options = {access_token: tok, :mode => :query, :param_name => "oauth2_access_token"}
+        ::OAuth2::AccessToken.from_hash client, options
         # ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
         #   :mode => :query,
         #   :param_name => 'oauth2_access_token'
