@@ -8,10 +8,18 @@ module OmniAuth
 
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
+      # option :client_options, {
+      #   :site => 'https://www.linkedin.com',
+      #   :authorize_url => '/uas/oauth2/authorization?response_type=code',
+      #   :token_url => '/uas/oauth2/accessToken'
+      # }
+
+      # We need to use these endpoints instead.
+
       option :client_options, {
-        :site => 'https://www.linkedin.com',
-        :authorize_url => '/uas/oauth2/authorization?response_type=code',
-        :token_url => '/uas/oauth2/accessToken'
+        :site => "https://api.linkedin.com",
+        :authorize_url => "https://www.linkedin.com/uas/oauth2/authorization",
+        :token_url => "https://www.linkedin.com/uas/oauth2/accessToken"
       }
 
       option :scope, 'r_basicprofile r_emailaddress'
