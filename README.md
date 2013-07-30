@@ -20,6 +20,12 @@ Or install it yourself as:
 
     $ gem install omniauth-linkedin-oauth2
 
+## Upgrading
+
+Previous versions of this gem used the provider name `:linkedin_oauth2`. In order to provide a cleaner upgrade path for users who were previously using the OAuth 1.0 omniauth adapter for LinkedIn [https://github.com/skorks/omniauth-linkedin], this has been renamed to just `:linkedin`.
+
+Users who are upgrading from previous versions of this gem may need to update their Omniauth and/or Devise configurations to use the shorter provider name.
+
 ## Usage
 
 Register your application with LinkedIn to receive an API key: https://www.linkedin.com/secure/developer
@@ -28,11 +34,11 @@ This is an example that you might put into a Rails initializer at `config/initia
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET']
+  provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET']
 end
 ```
 
-You can now access the OmniAuth LinkedIn OAuth2 URL: `/auth/linkedin_oauth2`.
+You can now access the OmniAuth LinkedIn OAuth2 URL: `/auth/linkedin`.
 
 ## Granting Member Permissions to Your Application
 
@@ -46,7 +52,7 @@ By default, omniauth-linkedin-oauth2 requests the following permissions:
 You can configure the scope option:
 
 ```ruby
-provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_fullprofile r_emailaddress r_network'
+provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_fullprofile r_emailaddress r_network'
 ```
 
 ## Profile Fields
@@ -60,7 +66,7 @@ When specifying which permissions you want to users to grant to your application
 Here's an example of a possible configuration where the the fields returned from the API are: id, email-address, first-name and last-name.
 
 ```ruby
-provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id', 'email-address', 'first-name', 'last-name']
+provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id', 'email-address', 'first-name', 'last-name']
 ```
 
 To see a complete list of available fields, consult the LinkedIn documentation at: https://developer.linkedin.com/documents/profile-fields
