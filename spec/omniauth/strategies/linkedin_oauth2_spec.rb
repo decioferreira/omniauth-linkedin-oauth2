@@ -10,15 +10,15 @@ describe OmniAuth::Strategies::LinkedIn do
 
   describe '#client' do
     it 'has correct LinkedIn site' do
-      subject.client.site.should eq('https://www.linkedin.com')
+      subject.client.site.should eq('https://api.linkedin.com')
     end
 
     it 'has correct authorize url' do
-      subject.client.options[:authorize_url].should eq('/uas/oauth2/authorization?response_type=code')
+      subject.client.options[:authorize_url].should eq('https://www.linkedin.com/uas/oauth2/authorization?response_type=code')
     end
 
     it 'has correct token url' do
-      subject.client.options[:token_url].should eq('/uas/oauth2/accessToken')
+      subject.client.options[:token_url].should eq('https://www.linkedin.com/uas/oauth2/accessToken')
     end
   end
 
