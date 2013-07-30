@@ -47,10 +47,21 @@ module OmniAuth
       alias :oauth2_access_token :access_token
 
       def access_token
-        ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
-          :mode => :query,
-          :param_name => 'oauth2_access_token'
-        })
+        # Need to do the full access_token request instead of instantaite
+        # a new access token from scratch. This will otherwise cause an
+        # "Invalid Access Token" error. See this thread for details:
+        #
+        # http://developer.linkedin.com/forum/sudden-authentication-failure-production-environment?page=1
+        #
+        tok = oauth2_access_token.token
+        params = {:redirect_uri => callback_url}
+        options = {:mode => :query, :param_name => "oauth2_access_token"}
+        client.auth_code.get_token(tok, params, options)
+
+        # ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
+        #   :mode => :query,
+        #   :param_name => 'oauth2_access_token'
+        # })
       end
 
       def raw_info
