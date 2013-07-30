@@ -8,10 +8,18 @@ module OmniAuth
 
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
+      # option :client_options, {
+      #   :site => 'https://www.linkedin.com',
+      #   :authorize_url => '/uas/oauth2/authorization?response_type=code',
+      #   :token_url => '/uas/oauth2/accessToken'
+      # }
+
+      # We need to use these endpoints instead.
+
       option :client_options, {
-        :site => 'https://www.linkedin.com',
-        :authorize_url => '/uas/oauth2/authorization?response_type=code',
-        :token_url => '/uas/oauth2/accessToken'
+        :site => "https://api.linkedin.com",
+        :authorize_url => "https://www.linkedin.com/uas/oauth2/authorization",
+        :token_url => "https://www.linkedin.com/uas/oauth2/accessToken"
       }
 
       option :scope, 'r_basicprofile r_emailaddress'
@@ -47,26 +55,10 @@ module OmniAuth
       alias :oauth2_access_token :access_token
 
       def access_token
-        # Need to do the full access_token request instead of instantaite
-        # a new access token from scratch. This will otherwise cause an
-        # "Invalid Access Token" error. See this thread for details:
-        #
-        # http://developer.linkedin.com/forum/sudden-authentication-failure-production-environment?page=1
-        #
-        # params = {:redirect_uri => callback_url}
-        # log :info, tok
-        # log :info, params
-        # log :info, options
-        # log :info, client
-        # client.auth_code.get_token(tok, params, options)
-
-        tok = oauth2_access_token.token
-        options = {access_token: tok, :mode => :query, :param_name => "oauth2_access_token"}
-        ::OAuth2::AccessToken.from_hash client, options
-        # ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
-        #   :mode => :query,
-        #   :param_name => 'oauth2_access_token'
-        # })
+        ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
+          :mode => :query,
+          :param_name => 'oauth2_access_token'
+        })
       end
 
       def raw_info
