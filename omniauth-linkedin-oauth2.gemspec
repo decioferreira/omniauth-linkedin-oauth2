@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{A LinkedIn OAuth2 strategy for OmniAuth.}
   gem.summary       = %q{A LinkedIn OAuth2 strategy for OmniAuth.}
   gem.homepage      = "https://github.com/decioferreira/omniauth-linkedin-oauth2"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
