@@ -9,14 +9,14 @@ module OmniAuth
 
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
-      state = SecureRandom.hex
       
       option :client_options, {
         :site => 'https://api.linkedin.com',
-        :authorize_url => 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&state=' + state,
+        :authorize_url => 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code',
         :token_url => 'https://www.linkedin.com/uas/oauth2/accessToken'
       }
 
+      option :state, SecureRandom.hex
       option :scope, 'r_basicprofile r_emailaddress'
       option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
 
