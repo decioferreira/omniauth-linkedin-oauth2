@@ -6,6 +6,8 @@ module OmniAuth
       # Give your strategy a name.
       option :name, 'linkedin'
 
+      option :authorize_options, [:scope, :state]
+
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
       option :client_options, {
@@ -16,6 +18,16 @@ module OmniAuth
 
       option :scope, 'r_basicprofile r_emailaddress'
       option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+
+      def authorize_params
+        super.tap do |params|
+          options[:authorize_options].each do |k|
+            params[k] = request.params[k.to_s] unless [nil, ''].include?(request.params[k.to_s])
+          end
+
+          session['omniauth.state'] = params[:state] if params['state']
+        end
+      end
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making

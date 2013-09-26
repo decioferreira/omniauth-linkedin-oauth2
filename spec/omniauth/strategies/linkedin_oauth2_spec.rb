@@ -2,7 +2,28 @@ require 'spec_helper'
 require 'omniauth-linkedin-oauth2'
 
 describe OmniAuth::Strategies::LinkedIn do
-  subject { OmniAuth::Strategies::LinkedIn.new(nil) }
+  let(:request) { double('Request', :params => {}, :cookies => {}, :env => {}) }
+  let(:app) {
+    lambda do
+      [200, {}, ["Hello."]]
+    end
+  }
+
+  subject do
+    OmniAuth::Strategies::LinkedIn.new(app, 'appid', 'secret', @options || {}).tap do |strategy|
+      strategy.stub(:request) {
+        request
+      }
+    end
+  end
+
+  before do
+    OmniAuth.config.test_mode = true
+  end
+
+  after do
+    OmniAuth.config.test_mode = false
+  end
 
   it 'should add a camelization for itself' do
     OmniAuth::Utils.camelize('linkedin').should == 'LinkedIn'
@@ -75,14 +96,63 @@ describe OmniAuth::Strategies::LinkedIn do
     end
   end
 
-  describe '#authorize_params' do
+  describe "#authorize_options" do
+    [:scope, :state].each do |k|
+      it "should support #{k}" do
+        @options = {k => 'http://someval'}
+        subject.authorize_params[k.to_s].should eq('http://someval')
+      end
+    end
+
     describe 'scope' do
-      before :each do
-        subject.stub(:session => {})
+      it 'should set default scope to r_basicprofile r_emailaddress' do
+        subject.authorize_params['scope'].should eq('r_basicprofile r_emailaddress')
+      end
+    end
+
+    describe 'state' do
+      it 'should set the state parameter' do
+        @options = {:state => 'some_state'}
+        subject.authorize_params['state'].should eq('some_state')
+        subject.session['omniauth.state'].should eq('some_state')
       end
 
-      it 'sets default scope' do
-        subject.authorize_params['scope'].should eq('r_basicprofile r_emailaddress')
+      it 'should set the omniauth.state dynamically' do
+        subject.stub(:request) { double('Request', {:params => {'state' => 'some_state'}, :env => {}}) }
+        subject.authorize_params['state'].should eq('some_state')
+        subject.session['omniauth.state'].should eq('some_state')
+      end
+    end
+
+    describe "overrides" do
+      it 'should include top-level options that are marked as :authorize_options' do
+        @options = {:authorize_options => [:scope, :foo, :request_visible_actions], :scope => 'http://bar', :foo => 'baz', :hd => "wow", :request_visible_actions => "something"}
+        subject.authorize_params['scope'].should eq('http://bar')
+        subject.authorize_params['foo'].should eq('baz')
+        subject.authorize_params['hd'].should eq(nil)
+        subject.authorize_params['request_visible_actions'].should eq('something')
+      end
+
+      describe "request overrides" do
+        [:scope, :state].each do |k|
+          context "authorize option #{k}" do
+            let(:request) { double('Request', :params => {k.to_s => 'http://example.com'}, :cookies => {}, :env => {}) }
+
+            it "should set the #{k} authorize option dynamically in the request" do
+              @options = {k => ''}
+              subject.authorize_params[k.to_s].should eq('http://example.com')
+            end
+          end
+        end
+
+        describe "custom authorize_options" do
+          let(:request) { double('Request', :params => {'foo' => 'something'}, :cookies => {}, :env => {}) }
+
+          it "should support request overrides from custom authorize_options" do
+            @options = {:authorize_options => [:foo], :foo => ''}
+            subject.authorize_params['foo'].should eq('something')
+          end
+        end
       end
     end
   end
