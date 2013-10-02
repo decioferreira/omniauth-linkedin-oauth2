@@ -104,6 +104,18 @@ describe OmniAuth::Strategies::LinkedIn do
       end
     end
 
+    describe 'redirect_uri' do
+      it 'should default to nil' do
+        @options = {}
+        subject.authorize_params['redirect_uri'].should eq(nil)
+      end
+
+      it 'should set the redirect_uri parameter if present' do
+        @options = {:redirect_uri => 'https://example.com'}
+        subject.authorize_params['redirect_uri'].should eq('https://example.com')
+      end
+    end
+
     describe 'scope' do
       it 'should set default scope to r_basicprofile r_emailaddress' do
         subject.authorize_params['scope'].should eq('r_basicprofile r_emailaddress')

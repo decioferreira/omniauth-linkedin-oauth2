@@ -6,7 +6,7 @@ module OmniAuth
       # Give your strategy a name.
       option :name, 'linkedin'
 
-      option :authorize_options, [:scope, :state]
+      option :authorize_options, [:scope, :state, :redirect_uri]
 
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
