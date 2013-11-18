@@ -8,7 +8,7 @@ require 'omniauth-linkedin-oauth2'
 
 class App < Sinatra::Base
   get '/' do
-    redirect '/auth/linkedin_oauth2'
+    redirect '/auth/linkedin'
   end
 
   get '/auth/:provider/callback' do
@@ -25,7 +25,7 @@ end
 use Rack::Session::Cookie, :secret => 'change_me'
 
 use OmniAuth::Builder do
-  provider :linkedin_oauth2, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET']
+  provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET']
 end
 
 run App.new
