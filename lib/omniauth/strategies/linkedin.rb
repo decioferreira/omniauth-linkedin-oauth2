@@ -13,7 +13,8 @@ module OmniAuth
       option :client_options, {
         :site => 'https://api.linkedin.com',
         :authorize_url => 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code',
-        :token_url => 'https://www.linkedin.com/uas/oauth2/accessToken'
+        :token_url => 'https://www.linkedin.com/uas/oauth2/accessToken',
+        :token_method => :get
       }
 
       option :token_params, {
