@@ -20,14 +20,6 @@ describe OmniAuth::Strategies::LinkedIn do
     it 'has correct token url' do
       subject.client.options[:token_url].should eq('https://www.linkedin.com/uas/oauth2/accessToken')
     end
-
-    it 'has correct token url' do
-      subject.client.options[:token_method].should eq(:get)
-    end
-
-    it 'posts params using the :query mode' do
-      subject.options.token_params[:mode].should == :query
-    end
   end
 
   describe '#callback_path' do
