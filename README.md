@@ -63,7 +63,7 @@ When specifying which permissions you want to users to grant to your application
 ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
 ```
 
-Here's an example of a possible configuration where the the fields returned from the API are: id, email-address, first-name and last-name.
+Here's an example of a possible configuration where the fields returned from the API are: id, email-address, first-name and last-name.
 
 ```ruby
 provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id', 'email-address', 'first-name', 'last-name']
