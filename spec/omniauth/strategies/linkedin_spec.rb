@@ -64,6 +64,15 @@ describe OmniAuth::Strategies::LinkedIn do
     it { subject.extra['raw_info'].should eq({ :foo => 'bar' }) }
   end
 
+  describe '#access_token' do
+    before :each do
+      subject.stub(:oauth2_access_token) { double('oauth2 access token', :expires_in => 3600, :expires_at => 946688400).as_null_object }
+    end
+
+    it { subject.access_token.expires_in.should eq(3600) }
+    it { subject.access_token.expires_at.should eq(946688400) }
+  end
+
   describe '#raw_info' do
     before :each do
       response = double('response', :parsed => { :foo => 'bar' })
