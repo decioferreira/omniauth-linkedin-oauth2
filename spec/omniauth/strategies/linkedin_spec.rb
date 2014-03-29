@@ -75,8 +75,12 @@ describe OmniAuth::Strategies::LinkedIn do
 
   describe '#raw_info' do
     before :each do
+      access_token = double('access token')
       response = double('response', :parsed => { :foo => 'bar' })
-      subject.stub(:access_token) { double('access token', :get => response) }
+      access_token.should_receive(:get).with("/v1/people/~:(baz,qux)?format=json").and_return(response)
+
+      subject.stub(:option_fields) { ['baz', 'qux'] }
+      subject.stub(:access_token) { access_token }
     end
 
     it 'returns parsed response from access token' do
@@ -93,6 +97,25 @@ describe OmniAuth::Strategies::LinkedIn do
       it 'sets default scope' do
         subject.authorize_params['scope'].should eq('r_basicprofile r_emailaddress')
       end
+    end
+  end
+
+  describe '#option_fields' do
+    it 'returns options fields' do
+      subject.stub(:options => double('options', :fields => ['foo', 'bar']).as_null_object)
+      subject.send(:option_fields).should eq(['foo', 'bar'])
+    end
+
+    it 'http avatar image by default' do
+      subject.stub(:options => double('options', :fields => ['picture-url']))
+      subject.options.stub(:[]).with(:secure_image_url).and_return(false)
+      subject.send(:option_fields).should eq(['picture-url'])
+    end
+
+    it 'https avatar image if secure_image_url truthy' do
+      subject.stub(:options => double('options', :fields => ['picture-url']))
+      subject.options.stub(:[]).with(:secure_image_url).and_return(true)
+      subject.send(:option_fields).should eq(['picture-url;secure=true'])
     end
   end
 end

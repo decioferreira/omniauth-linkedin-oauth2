@@ -56,12 +56,16 @@ module OmniAuth
       end
 
       def raw_info
-        fields = options.fields
-        fields.map! { |f| f == "picture-url" ? "picture-url;secure=true" : f } if !!options[:secure_image_url]
-        @raw_info ||= access_token.get("/v1/people/~:(#{fields.join(',')})?format=json").parsed
+        @raw_info ||= access_token.get("/v1/people/~:(#{option_fields.join(',')})?format=json").parsed
       end
 
       private
+
+      def option_fields
+        fields = options.fields
+        fields.map! { |f| f == "picture-url" ? "picture-url;secure=true" : f } if !!options[:secure_image_url]
+        fields
+      end
 
       def user_name
         name = "#{raw_info['firstName']} #{raw_info['lastName']}".strip
