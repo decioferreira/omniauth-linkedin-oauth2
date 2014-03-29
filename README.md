@@ -71,6 +71,10 @@ provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id
 
 To see a complete list of available fields, consult the LinkedIn documentation at: https://developer.linkedin.com/documents/profile-fields
 
+## Other Options
+
+* `secure_image_url` - Set to `true` to use https for the profile picture url. Default is `false`.
+
 ## Contributing
 
 1. Fork it
