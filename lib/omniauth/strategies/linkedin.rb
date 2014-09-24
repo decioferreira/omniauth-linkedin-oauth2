@@ -15,7 +15,7 @@ module OmniAuth
       }
 
       option :scope, 'r_basicprofile r_emailaddress'
-      option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+      option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-urls::(original)', 'public-profile-url']
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
