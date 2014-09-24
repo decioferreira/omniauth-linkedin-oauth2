@@ -60,7 +60,7 @@ provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_fu
 When specifying which permissions you want to users to grant to your application, you will probably want to specify the array of fields that you want returned in the omniauth hash. The list of default fields is as follows:
 
 ```ruby
-['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-urls::(original)', 'public-profile-url']
 ```
 
 Here's an example of a possible configuration where the fields returned from the API are: id, email-address, first-name and last-name.
