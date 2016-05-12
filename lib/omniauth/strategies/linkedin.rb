@@ -59,6 +59,10 @@ module OmniAuth
         @raw_info ||= access_token.get("/v1/people/~:(#{option_fields.join(',')})?format=json").parsed
       end
 
+      def callback_url
+        options[:callback_url] || super
+      end
+
       private
 
       def option_fields
