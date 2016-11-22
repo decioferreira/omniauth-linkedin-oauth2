@@ -1,4 +1,5 @@
 require 'omniauth-oauth2'
+require 'securerandom'
 
 module OmniAuth
   module Strategies
@@ -8,9 +9,11 @@ module OmniAuth
 
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
+      state = SecureRandom.hex
+      
       option :client_options, {
         :site => 'https://api.linkedin.com',
-        :authorize_url => 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code',
+        :authorize_url => 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code&state=' + state,
         :token_url => 'https://www.linkedin.com/uas/oauth2/accessToken'
       }
 
