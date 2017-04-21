@@ -14,11 +14,11 @@ describe OmniAuth::Strategies::LinkedIn do
     end
 
     it 'has correct authorize url' do
-      expect(subject.client.options[:authorize_url]).to eq('https://www.linkedin.com/uas/oauth2/authorization?response_type=code')
+      expect(subject.client.options[:authorize_url]).to eq('https://www.linkedin.com/oauth/v2/authorization?response_type=code')
     end
 
     it 'has correct token url' do
-      expect(subject.client.options[:token_url]).to eq('https://www.linkedin.com/uas/oauth2/accessToken')
+      expect(subject.client.options[:token_url]).to eq('https://www.linkedin.com/oauth/v2/accessToken')
     end
   end
 
