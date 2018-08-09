@@ -15,7 +15,7 @@ module OmniAuth
       }
 
       option :scope, 'r_basicprofile r_emailaddress'
-      option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+      option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-urls::(original)', 'public-profile-url']
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
@@ -33,7 +33,7 @@ module OmniAuth
           :last_name => raw_info['lastName'],
           :location => raw_info['location'],
           :description => raw_info['headline'],
-          :image => raw_info['pictureUrl'],
+          :image => raw_info['pictureUrls'],
           :urls => {
             'public_profile' => raw_info['publicProfileUrl']
           }
