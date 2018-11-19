@@ -53,6 +53,7 @@ describe OmniAuth::Strategies::LinkedIn do
       it { expect(subject.info).to have_key :description }
       it { expect(subject.info).to have_key :image }
       it { expect(subject.info).to have_key :urls }
+      it { expect(subject.info).to have_key :summary }
     end
   end
 
