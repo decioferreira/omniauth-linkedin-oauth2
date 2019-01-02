@@ -77,7 +77,9 @@ describe OmniAuth::Strategies::LinkedIn do
     before :each do
       access_token = double('access token')
       response = double('response', :parsed => { :foo => 'bar' })
-      expect(access_token).to receive(:get).with("/v1/people/~:(baz,qux)?format=json").and_return(response)
+      expect(access_token).to receive(:get)
+        .with("/v1/people/~:(id,email-address,first-name,last-name,headline,location,industry,picture-url,public-profile-url)?format=json")
+        .and_return(response)
 
       allow(subject).to receive(:access_token) { access_token }
     end
