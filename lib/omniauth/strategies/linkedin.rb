@@ -14,34 +14,31 @@ module OmniAuth
         :token_url => 'https://www.linkedin.com/oauth/v2/accessToken'
       }
 
-      option :scope, 'r_basicprofile r_emailaddress'
-      option :fields, ['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+      option :scope, 'r_liteprofile r_emailaddress'
+      option :fields, ['id', 'firstName', 'lastName', 'profilePicture(displayImage~:playableStreams)']
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
       # additional calls (if the user id is returned with the token
       # or as a URI parameter). This may not be possible with all
       # providers.
-      uid { raw_info['id'] }
+      uid do
+        raw_info['id']
+      end
 
       info do
         {
-          :name => user_name,
-          :email => raw_info['emailAddress'],
-          :nickname => user_name,
-          :first_name => raw_info['firstName'],
-          :last_name => raw_info['lastName'],
-          :location => raw_info['location'],
-          :description => raw_info['headline'],
-          :image => raw_info['pictureUrl'],
-          :urls => {
-            'public_profile' => raw_info['publicProfileUrl']
-          }
+          :email => nil,
+          :first_name => localized_field('firstName'),
+          :last_name => localized_field('lastName'),
+          :picture_url => picture_url
         }
       end
 
       extra do
-        { 'raw_info' => raw_info }
+        {
+          'raw_info' => raw_info
+        }
       end
 
       def callback_url
@@ -52,22 +49,50 @@ module OmniAuth
 
       def access_token
         ::OAuth2::AccessToken.new(client, oauth2_access_token.token, {
-          :mode => :query,
-          :param_name => 'oauth2_access_token',
           :expires_in => oauth2_access_token.expires_in,
           :expires_at => oauth2_access_token.expires_at
         })
       end
 
       def raw_info
-        @raw_info ||= access_token.get("/v1/people/~:(#{options.fields.join(',')})?format=json").parsed
+        @raw_info ||= access_token.get(profile_endpoint).parsed
       end
 
       private
 
-      def user_name
-        name = "#{raw_info['firstName']} #{raw_info['lastName']}".strip
-        name.empty? ? nil : name
+      def localized_field field_name
+        return unless localized_field_available? field_name
+
+        raw_info[field_name]['localized'][field_locale(field_name)]
+      end
+
+      def field_locale field_name
+        "#{ raw_info[field_name]['preferredLocale']['language'] }_" \
+          "#{ raw_info[field_name]['preferredLocale']['country'] }"
+      end
+
+      def localized_field_available? field_name
+        raw_info[field_name] && raw_info[field_name]['localized']
+      end
+
+      def picture_url
+        return unless picture_available?
+
+        picture_references.last['identifiers'].first['identifier']
+      end
+
+      def picture_available?
+        raw_info['profilePicture'] &&
+          raw_info['profilePicture']['displayImage~'] &&
+          picture_references
+      end
+
+      def picture_references
+        raw_info['profilePicture']['displayImage~']['elements']
+      end
+
+      def profile_endpoint
+        "/v2/me?projection=(#{ options.fields.join(',') })"
       end
     end
   end
