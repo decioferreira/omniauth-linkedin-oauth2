@@ -92,7 +92,7 @@ describe OmniAuth::Strategies::LinkedIn do
   describe '#authorize_params' do
     describe 'scope' do
       before :each do
-        subject.stub(:session => {})
+        allow(subject).to receive(:session).and_return({})
       end
 
       it 'sets default scope' do
