@@ -1,5 +1,5 @@
 module OmniAuth
   module LinkedInOAuth2
-    VERSION = "0.2.5"
+    VERSION = '1.0.0'
   end
 end
