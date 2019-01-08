@@ -15,7 +15,7 @@ module OmniAuth
       }
 
       option :scope, 'r_liteprofile r_emailaddress'
-      option :fields, ['id', 'firstName', 'lastName', 'profilePicture(displayImage~:playableStreams)']
+      option :fields, ['id', 'first-name', 'last-name', 'picture-url']
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
@@ -60,6 +60,21 @@ module OmniAuth
 
       private
 
+      def fields_mapping
+        {
+          'id' => 'id',
+          'first-name' => 'firstName',
+          'last-name' => 'lastName',
+          'picture-url' => 'profilePicture(displayImage~:playableStreams)'
+        }
+      end
+
+      def fields
+        options.fields.each.with_object([]) do |field, result|
+          result << fields_mapping[field]
+        end
+      end
+
       def localized_field field_name
         return unless localized_field_available? field_name
 
@@ -92,7 +107,7 @@ module OmniAuth
       end
 
       def profile_endpoint
-        "/v2/me?projection=(#{ options.fields.join(',') })"
+        "/v2/me?projection=(#{ fields.join(',') })"
       end
     end
   end
