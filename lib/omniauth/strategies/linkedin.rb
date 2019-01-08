@@ -3,11 +3,8 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class LinkedIn < OmniAuth::Strategies::OAuth2
-      # Give your strategy a name.
       option :name, 'linkedin'
 
-      # This is where you pass the options you would pass when
-      # initializing your consumer from the OAuth gem.
       option :client_options, {
         :site => 'https://api.linkedin.com',
         :authorize_url => 'https://www.linkedin.com/oauth/v2/authorization?response_type=code',
@@ -15,20 +12,15 @@ module OmniAuth
       }
 
       option :scope, 'r_liteprofile r_emailaddress'
-      option :fields, ['id', 'first-name', 'last-name', 'picture-url']
+      option :fields, ['id', 'first-name', 'last-name', 'picture-url', 'email-address']
 
-      # These are called after authentication has succeeded. If
-      # possible, you should try to set the UID without making
-      # additional calls (if the user id is returned with the token
-      # or as a URI parameter). This may not be possible with all
-      # providers.
       uid do
         raw_info['id']
       end
 
       info do
         {
-          :email => nil,
+          :email => email_address,
           :first_name => localized_field('firstName'),
           :last_name => localized_field('lastName'),
           :picture_url => picture_url
@@ -60,6 +52,30 @@ module OmniAuth
 
       private
 
+      def email_address
+        if options.fields.include? 'email-address'
+          fetch_email_address
+          parse_email_address
+        end
+      end
+
+      def fetch_email_address
+        @email_address_response ||= access_token.get(email_address_endpoint).parsed
+      end
+
+      def parse_email_address
+        return unless email_address_available?
+
+        @email_address_response['elements'].first['handle~']['emailAddress']
+      end
+
+      def email_address_available?
+        @email_address_response['elements'] &&
+          @email_address_response['elements'].is_a?(Array) &&
+          @email_address_response['elements'].first &&
+          @email_address_response['elements'].first['handle~']
+      end
+
       def fields_mapping
         {
           'id' => 'id',
@@ -71,7 +87,7 @@ module OmniAuth
 
       def fields
         options.fields.each.with_object([]) do |field, result|
-          result << fields_mapping[field]
+          result << fields_mapping[field] if fields_mapping.has_key? field
         end
       end
 
@@ -104,6 +120,10 @@ module OmniAuth
 
       def picture_references
         raw_info['profilePicture']['displayImage~']['elements']
+      end
+
+      def email_address_endpoint
+        '/v2/emailAddress?q=members&projection=(elements*(handle~))'
       end
 
       def profile_endpoint

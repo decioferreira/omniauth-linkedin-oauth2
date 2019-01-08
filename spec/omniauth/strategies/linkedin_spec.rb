@@ -38,16 +38,36 @@ describe OmniAuth::Strategies::LinkedIn do
     end
   end
 
-  describe '#info' do
+  describe '#info / #raw_info' do
+    let(:access_token) { instance_double OAuth2::AccessToken }
+
+    let(:parsed_response) { Hash[:foo => 'bar'] }
+
+    let(:profile_endpoint) { '/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))' }
+    let(:email_address_endpoint) { '/v2/emailAddress?q=members&projection=(elements*(handle~))' }
+
+    let(:email_address_response) { instance_double OAuth2::Response, parsed: parsed_response }
+    let(:profile_response) { instance_double OAuth2::Response, parsed: parsed_response }
+
     before :each do
-      allow(subject).to receive(:raw_info) { {} }
+      allow(subject).to receive(:access_token).and_return access_token
+
+      allow(access_token).to receive(:get)
+        .with(email_address_endpoint)
+        .and_return(email_address_response)
+
+      allow(access_token).to receive(:get)
+        .with(profile_endpoint)
+        .and_return(profile_response)
     end
 
-    context 'and therefore has all the necessary fields' do
-      specify { expect(subject.info).to have_key :email }
-      specify { expect(subject.info).to have_key :first_name }
-      specify { expect(subject.info).to have_key :last_name }
-      specify { expect(subject.info).to have_key :picture_url }
+    it 'returns parsed responses using access token' do
+      expect(subject.info).to have_key :email
+      expect(subject.info).to have_key :first_name
+      expect(subject.info).to have_key :last_name
+      expect(subject.info).to have_key :picture_url
+
+      expect(subject.raw_info).to eq({ :foo => 'bar' })
     end
   end
 
@@ -76,25 +96,6 @@ describe OmniAuth::Strategies::LinkedIn do
 
     specify { expect(subject.access_token.expires_in).to eq expires_in }
     specify { expect(subject.access_token.expires_at).to eq expires_at }
-  end
-
-  describe '#raw_info' do
-    let(:access_token) { instance_double OAuth2::AccessToken }
-    let(:parsed_response) { Hash[:foo => 'bar'] }
-    let(:response) { instance_double OAuth2::Response, parsed: parsed_response }
-    let(:profile_endpoint) { '/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))' }
-
-    before :each do
-      allow(subject).to receive(:access_token).and_return access_token
-
-      expect(access_token).to receive(:get)
-        .with(profile_endpoint)
-        .and_return(response)
-    end
-
-    it 'returns parsed response from the access token' do
-      expect(subject.raw_info).to eq({ :foo => 'bar' })
-    end
   end
 
   describe '#authorize_params' do
