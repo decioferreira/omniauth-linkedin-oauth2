@@ -4,7 +4,7 @@
 
 A LinkedIn OAuth2 strategy for OmniAuth.
 
-For more details, read the LinkedIn documentation: https://developer.linkedin.com/documents/authentication
+For more details, read the LinkedIn documentation: https://developer.linkedin.com/docs/oauth2
 
 ## Installation
 
@@ -21,6 +21,8 @@ Or install it yourself as:
     $ gem install omniauth-linkedin-oauth2
 
 ## Upgrading
+
+This version is a major upgrade to the LinkedIn API version 2. As such, it switches from the soon to be no longer available `r_basicprofile` to `r_liteprofile`. This results in a much limited set of data that we can get from LinkedIn.
 
 Previous versions of this gem used the provider name `:linkedin_oauth2`. In order to provide a cleaner upgrade path for users who were previously using the OAuth 1.0 omniauth adapter for LinkedIn [https://github.com/skorks/omniauth-linkedin], this has been renamed to just `:linkedin`.
 
@@ -43,16 +45,16 @@ You can now access the OmniAuth LinkedIn OAuth2 URL: `/auth/linkedin`.
 ## Granting Member Permissions to Your Application
 
 With the LinkedIn API, you have the ability to specify which permissions you want users to grant your application.
-For more details, read the LinkedIn documentation: https://developer.linkedin.com/documents/authentication
+For more details, read the LinkedIn documentation: https://developer.linkedin.com/docs/oauth2
 
 By default, omniauth-linkedin-oauth2 requests the following permissions:
 
-    'r_basicprofile r_emailaddress'
+    'r_liteprofile r_emailaddress'
 
 You can configure the scope option:
 
 ```ruby
-provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_fullprofile r_emailaddress r_network'
+provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_literofile'
 ```
 
 ## Profile Fields
@@ -60,25 +62,21 @@ provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_fu
 When specifying which permissions you want to users to grant to your application, you will probably want to specify the array of fields that you want returned in the omniauth hash. The list of default fields is as follows:
 
 ```ruby
-['id', 'email-address', 'first-name', 'last-name', 'headline', 'location', 'industry', 'picture-url', 'public-profile-url']
+['id', 'first-name', 'last-name', 'picture-url', 'email-address']
 ```
 
-Here's an example of a possible configuration where the fields returned from the API are: id, email-address, first-name and last-name.
+Here's an example of a possible configuration where the fields returned from the API are: id, first-name and last-name.
 
 ```ruby
-provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id', 'email-address', 'first-name', 'last-name']
+provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :fields => ['id', 'first-name', 'last-name']
 ```
 
-To see a complete list of available fields, consult the LinkedIn documentation at: https://developer.linkedin.com/documents/profile-fields
-
-## Other Options
-
-* `secure_image_url` - Set to `true` to use https for the profile picture url. Default is `false`.
+To see a complete list of available fields, consult the LinkedIn documentation at: https://developer.linkedin.com/docs/fields
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+1.  Fork it
+2.  Create your feature branch (`git checkout -b my-new-feature`)
+3.  Commit your changes (`git commit -am 'Add some feature'`)
+4.  Push to the branch (`git push origin my-new-feature`)
+5.  Create new Pull Request
