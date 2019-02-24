@@ -54,7 +54,7 @@ By default, omniauth-linkedin-oauth2 requests the following permissions:
 You can configure the scope option:
 
 ```ruby
-provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_literofile'
+provider :linkedin, ENV['LINKEDIN_KEY'], ENV['LINKEDIN_SECRET'], :scope => 'r_liteprofile'
 ```
 
 ## Profile Fields
