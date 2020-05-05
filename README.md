@@ -8,13 +8,9 @@ For more details, read the LinkedIn documentation: https://developer.linkedin.co
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this gem to your application's Gemfile:
 
-    gem 'omniauth-linkedin-oauth2'
-
-And then execute:
-
-    $ bundle
+    bundle add omniauth-linkedin-oauth2
 
 Or install it yourself as:
 
