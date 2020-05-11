@@ -131,7 +131,7 @@ module OmniAuth
       def profile_url
         return nil if raw_info['vanityName'].nil?
 
-        "www.linkedin.com/in/{raw_info['vanityName']}"
+        "www.linkedin.com/in/#{raw_info['vanityName']}"
       end
 
       def picture_available?
