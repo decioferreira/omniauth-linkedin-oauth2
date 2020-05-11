@@ -35,8 +35,7 @@ module OmniAuth
           vanity_name: raw_info['vanityName'],
           maiden_name: localized_field('maidenName'),
           headline: localized_field('headline'),
-          picture_url: picture_url,
-          profile_url: profile_url
+          picture_url: picture_url
         }
       end
 
@@ -126,12 +125,6 @@ module OmniAuth
         return unless picture_available?
 
         picture_references.last['identifiers'].first['identifier']
-      end
-
-      def profile_url
-        return nil if raw_info['vanityName'].nil?
-
-        "www.linkedin.com/in/#{raw_info['vanityName']}"
       end
 
       def picture_available?
