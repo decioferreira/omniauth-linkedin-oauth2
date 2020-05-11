@@ -6,13 +6,22 @@ module OmniAuth
       option :name, 'linkedin'
 
       option :client_options, {
-        :site => 'https://api.linkedin.com',
-        :authorize_url => 'https://www.linkedin.com/oauth/v2/authorization?response_type=code',
-        :token_url => 'https://www.linkedin.com/oauth/v2/accessToken'
+        site: 'https://api.linkedin.com',
+        authorize_url: 'https://www.linkedin.com/oauth/v2/authorization?response_type=code',
+        token_url: 'https://www.linkedin.com/oauth/v2/accessToken'
       }
 
-      option :scope, 'r_liteprofile r_emailaddress'
-      option :fields, ['id', 'first-name', 'last-name', 'picture-url', 'email-address']
+      option :scope, 'r_basicprofile r_emailaddress'
+      option :fields, %w[
+        id
+        first-name
+        last-name
+        picture-url
+        email-address
+        vanity-name
+        maiden-name
+        headline
+      ]
 
       uid do
         raw_info['id']
@@ -20,10 +29,14 @@ module OmniAuth
 
       info do
         {
-          :email => email_address,
-          :first_name => localized_field('firstName'),
-          :last_name => localized_field('lastName'),
-          :picture_url => picture_url
+          email: email_address,
+          first_name: localized_field('firstName'),
+          last_name: localized_field('lastName'),
+          vanity_name: raw_info['vanityName'],
+          maiden_name: localized_field('maidenName'),
+          headline: localized_field('headline'),
+          picture_url: picture_url,
+          profile_url: profile_url
         }
       end
 
@@ -81,7 +94,10 @@ module OmniAuth
           'id' => 'id',
           'first-name' => 'firstName',
           'last-name' => 'lastName',
-          'picture-url' => 'profilePicture(displayImage~:playableStreams)'
+          'picture-url' => 'profilePicture(displayImage~:playableStreams)',
+          'vanity-name' => 'vanityName',
+          'maiden-name' => 'maidenName',
+          'headline' => 'headline'
         }
       end
 
@@ -110,6 +126,12 @@ module OmniAuth
         return unless picture_available?
 
         picture_references.last['identifiers'].first['identifier']
+      end
+
+      def profile_url
+        return nil if raw_info['vanityName'].nil?
+
+        "www.linkedin.com/in/{raw_info['vanityName']}"
       end
 
       def picture_available?
