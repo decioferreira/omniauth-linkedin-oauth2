@@ -46,3 +46,5 @@ module OmniAuth
     end
   end
 end
+
+OmniAuth.config.add_camelization 'linkedin_basic', 'LinkedInBasic'
