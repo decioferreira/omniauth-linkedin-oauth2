@@ -18,13 +18,13 @@ module OmniAuth
 
       info do
         {
-          email: email_address,
-          first_name: localized_field('firstName'),
-          last_name: localized_field('lastName'),
-          vanity_name: raw_info['vanityName'],
-          maiden_name: localized_field('maidenName'),
-          headline: localized_field('headline'),
-          picture_url: picture_url
+          :email => email_address,
+          :first_name => localized_field('firstName'),
+          :last_name => localized_field('lastName'),
+          :vanity_name => raw_info['vanityName'],
+          :maiden_name => localized_field('maidenName'),
+          :headline => localized_field('headline'),
+          :picture_url => picture_url
         }
       end
 
