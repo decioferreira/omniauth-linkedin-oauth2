@@ -3,7 +3,7 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class LinkedInBasic < LinkedIn
-      option :name, 'linkedinbasic'
+      option :name, 'linkedin_basic'
 
       option :scope, 'r_basicprofile r_emailaddress'
 
