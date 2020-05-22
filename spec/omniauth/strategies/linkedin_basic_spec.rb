@@ -43,7 +43,7 @@ describe OmniAuth::Strategies::LinkedInBasic do
 
     let(:parsed_response) { Hash[:foo => 'bar'] }
 
-    let(:profile_endpoint) { "/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),vanityName,maidenName,headline)" }
+    let(:profile_endpoint) { '/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),vanityName,maidenName,headline)' }
     let(:email_address_endpoint) { '/v2/emailAddress?q=members&projection=(elements*(handle~))' }
 
     let(:email_address_response) { instance_double OAuth2::Response, parsed: parsed_response }
