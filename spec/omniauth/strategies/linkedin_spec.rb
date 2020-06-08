@@ -39,6 +39,7 @@ describe OmniAuth::Strategies::LinkedIn do
   end
 
   describe '#info / #raw_info' do
+
     let(:access_token) { instance_double OAuth2::AccessToken }
 
     let(:parsed_response) { Hash[:foo => 'bar'] }
@@ -61,13 +62,32 @@ describe OmniAuth::Strategies::LinkedIn do
         .and_return(profile_response)
     end
 
-    it 'returns parsed responses using access token' do
-      expect(subject.info).to have_key :email
-      expect(subject.info).to have_key :first_name
-      expect(subject.info).to have_key :last_name
-      expect(subject.info).to have_key :picture_url
+    context 'lite_profile' do
+      it 'returns parsed responses using access token' do
+        expect(subject.info).to have_key :email
+        expect(subject.info).to have_key :first_name
+        expect(subject.info).to have_key :last_name
+        expect(subject.info).to have_key :picture_url
 
-      expect(subject.raw_info).to eq({ :foo => 'bar' })
+        expect(subject.raw_info).to eq({ :foo => 'bar' })
+      end
+    end
+
+    context 'basic_profile' do
+      subject { OmniAuth::Strategies::LinkedIn.new(scope: ['r_emailaddress r_basicprofile']) }
+      let(:profile_endpoint) { '/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),vanityName,maidenName,headline)' }
+
+      it 'returns parsed responses using access token' do
+        expect(subject.info).to have_key :email
+        expect(subject.info).to have_key :first_name
+        expect(subject.info).to have_key :last_name
+        expect(subject.info).to have_key :picture_url
+        expect(subject.info).to have_key :vanity_name
+        expect(subject.info).to have_key :maiden_name
+        expect(subject.info).to have_key :headline
+
+        expect(subject.raw_info).to eq({ :foo => 'bar' })
+      end
     end
   end
 
