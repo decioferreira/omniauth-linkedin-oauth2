@@ -19,7 +19,7 @@ module OmniAuth
       end
 
       info do
-        scope.include?('r_basicprofile') ? lite_info.merge(basic_info) : lite_info
+        options.scope.include?('r_basicprofile') ? lite_info.merge(basic_info) : lite_info
       end
 
       extra do
