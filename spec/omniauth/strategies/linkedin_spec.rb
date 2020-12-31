@@ -28,6 +28,15 @@ describe OmniAuth::Strategies::LinkedIn do
     end
   end
 
+  describe '#custom redirect_url' do
+    let(:redirect_url) {'http://localhost:3001'}
+
+    it 'custom redirect' do
+      expect(subject.callback_url).to eq('http://localhost:3001')
+    end
+
+  end
+
   describe '#uid' do
     before :each do
       allow(subject).to receive(:raw_info) { Hash['id' => 'uid'] }
