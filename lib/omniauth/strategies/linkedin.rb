@@ -51,6 +51,12 @@ module OmniAuth
         @raw_info ||= access_token.get(profile_endpoint).parsed
       end
 
+      def token_params
+        super.tap do |params|
+          params.client_secret = options.client_secret
+        end
+      end
+
       private
 
       def email_address
