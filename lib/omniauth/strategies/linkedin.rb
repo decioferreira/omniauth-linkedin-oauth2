@@ -57,7 +57,33 @@ module OmniAuth
         end
       end
 
+      def full_host
+        case OmniAuth.config.full_host
+        when String
+          OmniAuth.config.full_host
+        when Proc
+          OmniAuth.config.full_host.call(env)
+        else
+          # in Rack 1.3.x, request.url explodes if scheme is nil
+          if request.scheme && request.url.match(URI::ABS_URI)
+            uri = URI.parse(request.url.gsub(/\?.*$/, ''))
+            process_full_host(uri)
+            uri.path = ''
+            # sometimes the url is actually showing http inside rails because the
+            # other layers (like nginx) have handled the ssl termination.
+            uri.scheme = 'https' if ssl? # rubocop:disable BlockNesting
+            uri.to_s
+          else ''
+          end
+        end
+      end
+
       private
+
+      def process_full_host(uri)
+        subdomain = uri.host.split(".")[0]
+        uri.host  = uri.host.gsub(subdomain, "login") unless %w[www api].include?(subdomain)
+      end
 
       def email_address
         if options.fields.include? 'email-address'
