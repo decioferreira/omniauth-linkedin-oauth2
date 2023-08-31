@@ -11,29 +11,30 @@ module OmniAuth
         :token_url => 'https://www.linkedin.com/oauth/v2/accessToken'
       }
 
-      option :scope, 'r_liteprofile r_emailaddress'
-      option :fields, ['id', 'first-name', 'last-name', 'picture-url', 'email-address']
+      option :scope, 'openid profile email'
+      option :fields, ['id', 'full-name', 'first-name', 'last-name', 'picture-url', 'email-address']
+      option :redirect_url
 
       uid do
-        raw_info['id']
+        raw_info['sub']
       end
 
       info do
         {
-          :email => email_address,
-          :first_name => localized_field('firstName'),
-          :last_name => localized_field('lastName'),
-          :picture_url => picture_url
+          :email => raw_info['email'],
+          :first_name => raw_info['given_name'],
+          :last_name => raw_info['family_name'],
+          :picture_url => raw_info['picture']
         }
       end
 
       extra do
-        {
-          'raw_info' => raw_info
-        }
+        { 'raw_info' => raw_info }
       end
 
       def callback_url
+        return options.redirect_url if options.redirect_url
+
         full_host + script_name + callback_path
       end
 
@@ -53,36 +54,14 @@ module OmniAuth
 
       private
 
-      def email_address
-        if options.fields.include? 'email-address'
-          fetch_email_address
-          parse_email_address
-        end
-      end
-
-      def fetch_email_address
-        @email_address_response ||= access_token.get(email_address_endpoint).parsed
-      end
-
-      def parse_email_address
-        return unless email_address_available?
-
-        @email_address_response['elements'].first['handle~']['emailAddress']
-      end
-
-      def email_address_available?
-        @email_address_response['elements'] &&
-          @email_address_response['elements'].is_a?(Array) &&
-          @email_address_response['elements'].first &&
-          @email_address_response['elements'].first['handle~']
-      end
-
       def fields_mapping
+        # https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2?context=linkedin%2Fconsumer%2Fcontext#api-request-to-retreive-member-details
         {
-          'id' => 'id',
-          'first-name' => 'firstName',
-          'last-name' => 'lastName',
-          'picture-url' => 'profilePicture(displayImage~:playableStreams)'
+          'id' => 'sub',
+          'full-name' => 'name',
+          'first-name' => 'given_name',
+          'last-name' => 'family_name',
+          'picture-url' => 'picture'
         }
       end
 
@@ -92,39 +71,10 @@ module OmniAuth
         end
       end
 
-      def localized_field field_name
-        raw_info.dig(*[field_name, 'localized', field_locale(field_name)])
-      end
-
-      def field_locale field_name
-        "#{ raw_info[field_name]['preferredLocale']['language'] }_" \
-          "#{ raw_info[field_name]['preferredLocale']['country'] }"
-      end
-
-      def picture_url
-        return unless picture_available?
-
-        picture_references.last['identifiers'].first['identifier']
-      end
-
-      def picture_available?
-        raw_info['profilePicture'] &&
-          raw_info['profilePicture']['displayImage~'] &&
-          picture_references
-      end
-
-      def picture_references
-        raw_info['profilePicture']['displayImage~']['elements']
-      end
-
-      def email_address_endpoint
-        '/v2/emailAddress?q=members&projection=(elements*(handle~))'
-      end
-
       def profile_endpoint
-        "/v2/me?projection=(#{ fields.join(',') })"
+        "/v2/userinfo"
       end
-      
+
       def token_params
         super.tap do |params|
           params.client_secret = options.client_secret
