@@ -4,7 +4,7 @@
 
 A LinkedIn OAuth2 strategy for OmniAuth.
 
-For more details, read the LinkedIn documentation: https://developer.linkedin.com/docs/oauth2
+For more details, read the LinkedIn documentation: https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2
 
 ## Installation
 
@@ -41,7 +41,7 @@ You can now access the OmniAuth LinkedIn OAuth2 URL: `/auth/linkedin`.
 ## Granting Member Permissions to Your Application
 
 With the LinkedIn API, you have the ability to specify which permissions you want users to grant your application.
-For more details, read the LinkedIn documentation: https://developer.linkedin.com/docs/oauth2
+For more details, read the LinkedIn documentation: https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2#authenticating-members
 
 By default, omniauth-linkedin-oauth2 requests the following permissions:
 
