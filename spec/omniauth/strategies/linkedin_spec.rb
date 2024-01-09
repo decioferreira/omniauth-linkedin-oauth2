@@ -62,12 +62,14 @@ describe OmniAuth::Strategies::LinkedIn do
     end
 
     it 'returns parsed responses using access token' do
-      expect(subject.info).to have_key :email
-      expect(subject.info).to have_key :first_name
-      expect(subject.info).to have_key :last_name
-      expect(subject.info).to have_key :picture_url
+      expect(subject.info).to eq({
+        email: nil,
+        first_name: nil,
+        last_name: nil,
+        picture_url: nil,
+      })
 
-      expect(subject.raw_info).to eq({ :foo => 'bar' })
+      expect(subject.raw_info).to eq(parsed_response)
     end
   end
 
@@ -112,21 +114,39 @@ describe OmniAuth::Strategies::LinkedIn do
   end
 
   describe '#localized_field' do
-    let(:raw_info) do 
-      {
-        'foo' => { 
-          'preferredLocale' => { 
-            'language' => 'bar', 
-            'country' => 'BAZ' 
-          }
-        }
-      }
-    end
-
     before :each do
       allow(subject).to receive(:raw_info).and_return raw_info
     end
 
-    specify { expect(subject.send(:field_locale,'foo')).to eq 'bar_BAZ' }
+    context 'with localized values' do
+      let(:raw_info) do
+        {
+          'foo' => { 
+            'preferredLocale' => { 
+              'language' => 'bar', 
+              'country' => 'BAZ' 
+            },
+            'localized' => {
+              'en_US' => 'wrong',
+              'bar_BAZ' => 'potato'
+            }
+          }
+        }
+      end
+
+      specify { expect(subject.send(:field_locale, 'foo')).to eq 'bar_BAZ' }
+      specify { expect(subject.send(:localized_field, 'foo')).to eq 'potato' }
+    end
+
+    context 'with non-localized values' do
+      let(:raw_info) do
+        {
+          'foo' => 'potato'
+        }
+      end
+
+      specify { expect(subject.send(:field_locale, 'foo')).to be_nil }
+      specify { expect(subject.send(:localized_field, 'foo')).to eq 'potato' }
+    end
   end
 end

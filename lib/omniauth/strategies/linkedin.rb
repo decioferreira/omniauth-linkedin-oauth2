@@ -93,12 +93,22 @@ module OmniAuth
       end
 
       def localized_field field_name
-        raw_info.dig(*[field_name, 'localized', field_locale(field_name)])
+        value = raw_info[field_name]
+        if value.is_a?(Hash)
+          value.dig('localized', field_locale(field_name))
+        else
+          value
+        end
       end
 
       def field_locale field_name
-        "#{ raw_info[field_name]['preferredLocale']['language'] }_" \
-          "#{ raw_info[field_name]['preferredLocale']['country'] }"
+        field_value = raw_info[field_name]
+        return unless field_value.is_a?(Hash)
+
+        preferred_locale = field_value['preferredLocale']
+        return unless preferred_locale
+
+        "#{preferred_locale['language'] }_#{preferred_locale['country'] }"
       end
 
       def picture_url
