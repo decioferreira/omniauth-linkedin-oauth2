@@ -1,10 +1,17 @@
 # OmniAuth LinkedIn OAuth2 Strategy
 
-[![Build Status](https://travis-ci.org/decioferreira/omniauth-linkedin-oauth2.png?branch=master)](https://travis-ci.org/decioferreira/omniauth-linkedin-oauth2)
-
 A LinkedIn OAuth2 strategy for OmniAuth.
 
-For more details, read the LinkedIn documentation: https://developer.linkedin.com/docs/oauth2
+For more details, read the LinkedIn documentation: https://learn.microsoft.com/en-us/linkedin/shared/authentication/authentication
+
+> This version of Sign In with LinkedIn has been deprecated as of August 1, 2023. For all Sign In with LinkedIn implementations going forward, please refer to [Sign In with LinkedIn using OpenID Connect](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2).
+
+## Sign In with LinkedIn using OpenID Connect
+
+LinkedIn is now offering a way for your apps to authenticate members using OpenID Connect (OIDC).
+
+You should install the new `gem 'omniauth-linkedin-openid'` for this purpose. You can find it at
+[jclusso/omniauth-linkedin-openid](https://github.com/jclusso/omniauth-linkedin-openid).
 
 ## Installation
 
@@ -26,7 +33,7 @@ Users who are upgrading from previous versions of this gem may need to update th
 
 ## Usage
 
-Register your application with LinkedIn to receive an API key: https://www.linkedin.com/secure/developer
+Register your application with LinkedIn to receive an API key: https://www.linkedin.com/developers/apps
 
 This is an example that you might put into a Rails initializer at `config/initializers/omniauth.rb`:
 
