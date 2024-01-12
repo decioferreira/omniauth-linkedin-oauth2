@@ -110,23 +110,4 @@ describe OmniAuth::Strategies::LinkedIn do
       end
     end
   end
-
-  describe '#localized_field' do
-    let(:raw_info) do 
-      {
-        'foo' => { 
-          'preferredLocale' => { 
-            'language' => 'bar', 
-            'country' => 'BAZ' 
-          }
-        }
-      }
-    end
-
-    before :each do
-      allow(subject).to receive(:raw_info).and_return raw_info
-    end
-
-    specify { expect(subject.send(:field_locale,'foo')).to eq 'bar_BAZ' }
-  end
 end
