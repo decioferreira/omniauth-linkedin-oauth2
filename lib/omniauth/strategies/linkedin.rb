@@ -14,6 +14,8 @@ module OmniAuth
       option :scope, 'r_liteprofile r_emailaddress'
       option :fields, ['id', 'first-name', 'last-name', 'picture-url', 'email-address']
 
+      option :redirect_url
+
       uid do
         raw_info['id']
       end
@@ -34,6 +36,9 @@ module OmniAuth
       end
 
       def callback_url
+        if options.redirect_url 
+          return options.redirect_url
+        end 
         full_host + script_name + callback_path
       end
 
