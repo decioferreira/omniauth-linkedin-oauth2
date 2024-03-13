@@ -39,6 +39,7 @@ describe OmniAuth::Strategies::LinkedIn do
   end
 
   describe '#info / #raw_info' do
+
     let(:access_token) { instance_double OAuth2::AccessToken }
 
     let(:parsed_response) { Hash[:foo => 'bar'] }
@@ -61,13 +62,51 @@ describe OmniAuth::Strategies::LinkedIn do
         .and_return(profile_response)
     end
 
-    it 'returns parsed responses using access token' do
-      expect(subject.info).to have_key :email
-      expect(subject.info).to have_key :first_name
-      expect(subject.info).to have_key :last_name
-      expect(subject.info).to have_key :picture_url
+    context 'lite_profile' do
+      it 'returns parsed responses using access token' do
+        expect(subject.options.scope).to eq('r_liteprofile r_emailaddress')
+        expect(subject.info).to have_key :email
+        expect(subject.info).to have_key :first_name
+        expect(subject.info).to have_key :last_name
+        expect(subject.info).to have_key :picture_url
 
-      expect(subject.raw_info).to eq({ :foo => 'bar' })
+        expect(subject.raw_info).to eq({ :foo => 'bar' })
+      end
+    end
+
+    context 'basic_profile' do
+      subject do
+        OmniAuth::Strategies::LinkedIn.new(
+          nil, 
+          scope: 'r_basicprofile r_emailaddress',
+          fields: [
+            'id',
+            'first-name',
+            'last-name',
+            'headline',
+            'picture-url',
+            'profile-url',
+            'email-address',
+            'vanity-name',
+            'maiden-name'
+          ]
+        )
+      end
+
+      let(:profile_endpoint) { '/v2/me?projection=(id,firstName,lastName,headline,profilePicture(displayImage~:playableStreams),vanityName,maidenName)' }
+
+      it 'returns parsed responses using access token' do
+        expect(subject.options.scope).to eq('r_basicprofile r_emailaddress')
+        expect(subject.info).to have_key :email
+        expect(subject.info).to have_key :first_name
+        expect(subject.info).to have_key :last_name
+        expect(subject.info).to have_key :picture_url
+        expect(subject.info).to have_key :vanity_name
+        expect(subject.info).to have_key :maiden_name
+        expect(subject.info).to have_key :headline
+
+        expect(subject.raw_info).to eq(:foo => 'bar')
+      end
     end
   end
 

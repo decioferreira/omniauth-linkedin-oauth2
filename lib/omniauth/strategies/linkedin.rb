@@ -19,12 +19,7 @@ module OmniAuth
       end
 
       info do
-        {
-          :email => email_address,
-          :first_name => localized_field('firstName'),
-          :last_name => localized_field('lastName'),
-          :picture_url => picture_url
-        }
+        options.scope.include?('r_basicprofile') ? lite_info.merge(basic_info) : lite_info
       end
 
       extra do
@@ -52,6 +47,23 @@ module OmniAuth
       end
 
       private
+
+      def lite_info
+        {
+          :email => email_address,
+          :first_name => localized_field('firstName'),
+          :last_name => localized_field('lastName'),
+          :picture_url => picture_url
+        }
+      end
+
+      def basic_info
+        {
+          :vanity_name => raw_info['vanityName'],
+          :maiden_name => localized_field('maidenName'),
+          :headline => localized_field('headline')
+        }
+      end
 
       def email_address
         if options.fields.include? 'email-address'
@@ -82,7 +94,10 @@ module OmniAuth
           'id' => 'id',
           'first-name' => 'firstName',
           'last-name' => 'lastName',
-          'picture-url' => 'profilePicture(displayImage~:playableStreams)'
+          'picture-url' => 'profilePicture(displayImage~:playableStreams)',
+          'vanity-name' => 'vanityName',
+          'maiden-name' => 'maidenName',
+          'headline' => 'headline'
         }
       end
 
